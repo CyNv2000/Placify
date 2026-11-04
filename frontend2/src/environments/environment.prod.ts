@@ -1,5 +1,4 @@
 export const environment = {
   production: true,
-  apiUrl: 'https://t-p-portal-1.onrender.com/api'
+  apiUrl: 'https://placify-6vv6.onrender.com/api'
 };
-
