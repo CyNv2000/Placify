@@ -18,7 +18,8 @@ public class CorsConfig {
                                 "http://localhost:4200",
                                 "https://tnp-portal.netlify.app",
                                 "https://*.netlify.app",
-                                "https://*.vercel.app")
+                                "https://*.vercel.app",
+                                "https://*.onrender.com")
                         .allowedMethods("GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS")
                         .allowedHeaders("*")
                         .allowCredentials(true)
