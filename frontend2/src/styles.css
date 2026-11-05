@@ -19,10 +19,10 @@
   --dust-taupe:  #D1CDC7;
 
   /* ── Semantic & Accent ── */
-  --signal-orange:       #CF4500;
-  --light-signal-orange: #F37338;
-  --clay-brown:          #9A3A0A;
-  --link-blue:           #3860BE;
+  --signal-orange:       #8B6914;
+  --light-signal-orange: #B08A32;
+  --clay-brown:          #6F5312;
+  --link-blue:           #8B6914;
 
   /* ── Radius ── */
   --radius-sm:      6px;
@@ -220,7 +220,7 @@ html.dark-theme {
   --charcoal:       #E8E2DA;
   --slate-gray:     #A0A0A0;
   --dust-taupe:     #444444;
-  --signal-orange:  #F37338;
+  --signal-orange:  #C5A04A;
   --bg-light:       #141413;
   --bg-white:       #262627;
   --text-main:      #F3F0EE;
