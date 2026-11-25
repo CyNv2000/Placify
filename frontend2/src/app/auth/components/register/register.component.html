@@ -55,15 +55,15 @@
 
         <!-- STEP 1: Email Input -->
         <div *ngIf="studentStep === 'email'" class="otp-section">
-          <p class="otp-hint">Enter your <strong>TCET college email</strong> to receive a one-time verification code.
+          <p class="otp-hint">Enter your <strong>email address</strong> to receive a one-time verification code.
           </p>
           <div class="form-group full-width">
-            <label>College Email</label>
-            <input id="studentEmail" type="email" placeholder="yourname@tcetmumbai.in"
+            <label>Email Address</label>
+            <input id="studentEmail" type="email" placeholder="you@example.com"
               (input)="errorMessage = ''; successMessage = ''" class="email-input">
-            <p class="field-hint" *ngIf="emailInputValue && !isTcetEmail(emailInputValue)"
+            <p class="field-hint" *ngIf="emailInputValue && !isValidEmail(emailInputValue)"
               style="color:#EF4444;font-size:0.85rem;margin-top:4px;">
-              Only tcetmumbai.in emails are accepted.
+              Please enter a valid email address.
             </p>
           </div>
           <button type="button" class="btn btn-primary submit-btn" [disabled]="otpSending"
