@@ -3,7 +3,7 @@ import { AbstractControl, FormBuilder, FormGroup, ValidationErrors, Validators }
 import { Router } from '@angular/router';
 import { AuthService } from '../../services/auth.service';
 
-/** Custom validator: only @tcetmumbai.in emails */
+/** Basic email check; registration is open to all email domains. */
 function tcetEmailValidator(control: AbstractControl): ValidationErrors | null {
   const val: string = control.value || '';
   if (!val) return null; // Let 'required' handle empty
@@ -83,13 +83,13 @@ export class RegisterComponent implements OnInit {
     return (document.getElementById('studentEmail') as HTMLInputElement)?.value || '';
   }
 
-  isTcetEmail(email: string): boolean {
-    return email.toLowerCase().endsWith('@tcetmumbai.in');
+  isValidEmail(email: string): boolean {
+    return /^[^\\s@]+@[^\\s@]+\\.[^\\s@]+$/.test(email);
   }
 
   sendOtp(email: string) {
-    if (!email || !this.isTcetEmail(email)) {
-      this.errorMessage = 'Please enter a valid @tcetmumbai.in email address.';
+    if (!email || !this.isValidEmail(email)) {
+      this.errorMessage = 'Please enter a valid email address.';
       return;
     }
     this.pendingEmail = email;   // ← save before DOM element is destroyed
