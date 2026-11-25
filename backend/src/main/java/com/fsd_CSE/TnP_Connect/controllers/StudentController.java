@@ -349,8 +349,8 @@ public class StudentController {
     // ================================================================
 
     /**
-     * Step 1 of registration: send OTP to a @tcetmumbai.in email.
-     * Request body: { "email": "student@tcetmumbai.in" }
+     * Step 1 of registration: send an OTP to the provided email address.
+     * Request body: { "email": "student@example.com" }
      */
     @PostMapping("/send-otp")
     public ResponseEntity<Map<String, String>> sendRegistrationOtp(
@@ -359,10 +359,6 @@ public class StudentController {
         String email = body.get("email");
         if (email == null || email.isBlank()) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Email is required.");
-        }
-        if (!email.toLowerCase().endsWith("@tcetmumbai.in")) {
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST,
-                    "Only @tcetmumbai.in email addresses are allowed for student registration.");
         }
         if (studentRepository.findByEmail(email).isPresent()) {
             throw new ResponseStatusException(HttpStatus.CONFLICT,
