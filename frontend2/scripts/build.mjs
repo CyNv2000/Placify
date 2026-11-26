@@ -17,23 +17,24 @@ try {
   throw new Error("PLACIFY_API_URL must be a valid absolute URL.");
 }
 
-if (apiUrl.protocol !== "https:" || !apiUrl.pathname.replace(/\\/+$/, "").endsWith("/api")) {
+while (apiUrl.pathname.endsWith("/")) {
+  apiUrl.pathname = apiUrl.pathname.slice(0, -1);
+}
+
+if (apiUrl.protocol !== "https:" || !apiUrl.pathname.endsWith("/api")) {
   throw new Error("PLACIFY_API_URL must use HTTPS and end with /api.");
 }
 
 const generatedEnvironmentPath = resolve(
   "src/environments/environment.netlify.generated.ts"
 );
+const generatedEnvironment = [
+  "export const environment =",
+  JSON.stringify({ production: true, apiUrl: apiUrl.toString() }, null, 2),
+  ";"
+].join("\n") + "\n";
 
-writeFileSync(
-  generatedEnvironmentPath,
-  `export const environment = ${JSON.stringify(
-    { production: true, apiUrl: apiUrl.toString().replace(/\\/+$/, "") },
-    null,
-    2
-  )};\\n`,
-  "utf8"
-);
+writeFileSync(generatedEnvironmentPath, generatedEnvironment, "utf8");
 
 const angularCliPath = resolve("node_modules/@angular/cli/bin/ng.js");
 if (!existsSync(angularCliPath)) {
