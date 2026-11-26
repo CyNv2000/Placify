@@ -40,3 +40,6 @@ testem.log
 # System files
 .DS_Store
 Thumbs.db
+
+# Generated from Netlify build environment
+/src/environments/environment.netlify.generated.ts
