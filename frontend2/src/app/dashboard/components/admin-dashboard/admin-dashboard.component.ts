@@ -1,7 +1,7 @@
 import { ToastService } from '../../../shared/services/toast.service';
 import { Component, OnInit } from '@angular/core';
 import { AdminDashboardService } from '../../services/admin-dashboard.service';
-import { forkJoin } from 'rxjs';
+import { catchError, forkJoin, of } from 'rxjs';
 import { Router } from '@angular/router';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 
@@ -154,7 +154,7 @@ export class AdminDashboardComponent implements OnInit {
       notes: this.dashboardService.getAllNotes(),
       sessions: this.dashboardService.getAllSessions(),
       contests: this.dashboardService.getAllContests(),       // FIXED: Missing in your code
-      notifications: this.dashboardService.getAllNotifications() // FIXED: Missing in your code
+      notifications: this.dashboardService.getAllNotifications().pipe(catchError((err) => { console.error('Failed to load notifications', err); return of([]); }))
     }).subscribe({
       next: (result) => {
         this.adminData = result.admin;
@@ -171,9 +171,9 @@ export class AdminDashboardComponent implements OnInit {
         this.allNotes = result.notes;
 
         this.allSessions = result.sessions;
-        const now = new Date().toISOString();
-        this.upcomingSessions = this.allSessions.filter(s => s.sessionDatetime >= now || !s.sessionDatetime);
-        this.pastSessions = this.allSessions.filter(s => s.sessionDatetime < now);
+        const now = Date.now();
+        this.upcomingSessions = this.allSessions.filter(s => !s.sessionDatetime || new Date(s.sessionDatetime).getTime() >= now);
+        this.pastSessions = this.allSessions.filter(s => !!s.sessionDatetime && new Date(s.sessionDatetime).getTime() < now);
 
         this.allContests = result.contests;
         this.totalContests = result.contests.length;
@@ -295,7 +295,10 @@ export class AdminDashboardComponent implements OnInit {
     this.showSessionForm = true;
     this.isEditingSession = true;
     this.editSessionId = session.id;
-    const datetimeStr = session.sessionDatetime ? new Date(session.sessionDatetime).toISOString().slice(0, 16) : '';
+    const sessionDate = session.sessionDatetime ? new Date(session.sessionDatetime) : null;
+    const datetimeStr = sessionDate && !Number.isNaN(sessionDate.getTime())
+      ? `${sessionDate.getFullYear()}-${String(sessionDate.getMonth() + 1).padStart(2, '0')}-${String(sessionDate.getDate()).padStart(2, '0')}T${String(sessionDate.getHours()).padStart(2, '0')}:${String(sessionDate.getMinutes()).padStart(2, '0')}`
+      : '';
     this.sessionForm.patchValue({
       title: session.title,
       speaker: session.speaker,
@@ -323,7 +326,7 @@ export class AdminDashboardComponent implements OnInit {
         joinUrl: v.mode === 'ONLINE' ? v.joinUrl : null,
         venue: v.mode === 'OFFLINE' ? v.venue : null,
         mode: v.mode,
-        sessionDatetime: v.sessionDatetime ? v.sessionDatetime + ':00+05:30' : null,
+        sessionDatetime: v.sessionDatetime ? new Date(v.sessionDatetime).toISOString() : null,
         targetBranch: (v.targetBranch === 'ALL' || !v.targetBranch) ? null : v.targetBranch,
         targetYear: (!v.targetYear || v.targetYear === 0) ? null : v.targetYear,
         createdByAdminId: this.adminId
@@ -508,7 +511,7 @@ export class AdminDashboardComponent implements OnInit {
       const payload = { ...this.internshipForm.value, createdByAdmin: { id: this.adminId } };
       this.dashboardService['http'].post('/api/internships/', payload).subscribe({
         next: () => { this.isPostingJob = false; this.toggleInternshipForm(); this.loadDashboardData(); this.toastService.show("Internship Posted Successfully!"); },
-        error: (err) => { this.isPostingJob = false; this.toastService.show("Failed to post internship."); }
+        error: (err) => { this.isPostingJob = false; console.error('Failed to post internship', err); this.toastService.show(err?.error?.message || err?.error?.error || `Failed to post internship (${err?.status || 'network error'}).`); }
       });
     } else { this.internshipForm.markAllAsTouched(); }
   }
