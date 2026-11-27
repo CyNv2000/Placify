@@ -29,6 +29,7 @@ export class AdminDashboardService {
 
   // --- INTERNSHIPS ---
   getAllInternships(): Observable<any[]> { return this.http.get<any[]>(`${this.apiUrl}/internships/`); }
+  createInternship(payload: any): Observable<any> { return this.http.post(`${this.apiUrl}/internships/`, payload); }
   getInternshipApplicants(internshipId: number): Observable<any[]> { return this.http.get<any[]>(`${this.apiUrl}/internships/${internshipId}/applicants`); }
 
   // --- SESSIONS ---
