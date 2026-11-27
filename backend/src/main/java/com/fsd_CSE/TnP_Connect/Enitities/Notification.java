@@ -12,12 +12,13 @@ public class Notification {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "notification_id")
     private Integer id;
 
     @Column(nullable = false)
     private String title;
 
-    @Column(columnDefinition = "TEXT", nullable = false)
+    @Column(name = "message", columnDefinition = "TEXT", nullable = false)
     private String content;
 
     @Column(name = "target_branch")
