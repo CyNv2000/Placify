@@ -158,7 +158,6 @@ export class AdminDashboardComponent implements OnInit {
     }).subscribe({
       next: (result) => {
         this.adminData = result.admin;
-        this.totalSessions = result.sessions.length;
         this.totalStudents = result.students.length;
 
         this.allInternships = result.internships;
@@ -172,8 +171,9 @@ export class AdminDashboardComponent implements OnInit {
 
         this.allSessions = result.sessions;
         const now = Date.now();
-        this.upcomingSessions = this.allSessions.filter(s => !s.sessionDatetime || new Date(s.sessionDatetime).getTime() >= now);
+        this.upcomingSessions = this.allSessions.filter(s => !!s.sessionDatetime && new Date(s.sessionDatetime).getTime() >= now);
         this.pastSessions = this.allSessions.filter(s => !!s.sessionDatetime && new Date(s.sessionDatetime).getTime() < now);
+        this.totalSessions = this.upcomingSessions.length;
 
         this.allContests = result.contests;
         this.totalContests = result.contests.length;
