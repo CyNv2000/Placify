@@ -509,7 +509,7 @@ export class AdminDashboardComponent implements OnInit {
     if (this.internshipForm.valid) {
       this.isPostingJob = true;
       const payload = { ...this.internshipForm.value, createdByAdmin: { id: this.adminId } };
-      this.dashboardService['http'].post('/api/internships/', payload).subscribe({
+      this.dashboardService.createInternship(payload).subscribe({
         next: () => { this.isPostingJob = false; this.toggleInternshipForm(); this.loadDashboardData(); this.toastService.show("Internship Posted Successfully!"); },
         error: (err) => { this.isPostingJob = false; console.error('Failed to post internship', err); this.toastService.show(err?.error?.message || err?.error?.error || `Failed to post internship (${err?.status || 'network error'}).`); }
       });
